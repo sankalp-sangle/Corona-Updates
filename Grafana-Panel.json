@@ -38,7 +38,7 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 12,
         "x": 0,
         "y": 0
@@ -123,7 +123,7 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 12,
         "x": 12,
         "y": 0
@@ -387,7 +387,7 @@
               },
               {
                 "color": "red",
-                "value": 60
+                "value": 50
               }
             ]
           },
@@ -410,7 +410,10 @@
       "type": "bargauge"
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "Kerala": "dark-red",
+        "Maharashtra": "semi-dark-green"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
