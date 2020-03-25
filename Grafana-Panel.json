@@ -416,7 +416,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "fill": 1,
+      "fill": 0,
       "fillGradient": 0,
       "gridPos": {
         "h": 17,
@@ -587,12 +587,19 @@
       }
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "Confirmed cases": "dark-red",
+        "Deaths": "light-yellow",
+        "India": "dark-red",
+        "Recoveries": "dark-green",
+        "total_cases_deceased{instance=\"localhost:7000\",job=\"corona\"}": "rgb(221, 0, 255)",
+        "total_cases_recovered{instance=\"localhost:7000\",job=\"corona\"}": "dark-green"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "fill": 1,
+      "fill": 0,
       "fillGradient": 0,
       "gridPos": {
         "h": 16,
@@ -628,8 +635,18 @@
       "targets": [
         {
           "expr": "total_cases_confirmed",
-          "legendFormat": "India",
+          "legendFormat": "Confirmed cases",
           "refId": "A"
+        },
+        {
+          "expr": "total_cases_deceased",
+          "legendFormat": "Deaths",
+          "refId": "B"
+        },
+        {
+          "expr": "total_cases_recovered",
+          "legendFormat": "Recoveries",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -860,12 +877,12 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now - 4h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Corona",
   "uid": "5tx1dN9Zk",
-  "version": 9
+  "version": 10
 }
