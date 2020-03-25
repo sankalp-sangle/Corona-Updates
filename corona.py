@@ -7,11 +7,11 @@ from prometheus_client.core import (REGISTRY, CounterMetricFamily,
                                     GaugeMetricFamily)
 
 
-url = "https://api.rootnet.in/covid19-in/stats/latest"
+url = "https://api.covid19india.org/data.json"
 
-response = requests.request("GET", url, headers={}, data = {})
+responseObj = requests.request("GET", url, headers={}, data = {})
+response = responseObj.json()
 
-counter = 1
 
 class CustomCollector(object):
     def __init__(self):
@@ -19,29 +19,45 @@ class CustomCollector(object):
 
     def collect(self):
         print("Call made")
-        global counter
-        responseObj = requests.request("GET", url, headers={}, data = {})
         
+        responseObj = requests.request("GET", url, headers={}, data = {})
         response = responseObj.json()
+        
 
-        g = GaugeMetricFamily("total_cases", 'Total diagnosed cases in India')
-        g.add_metric([], response['data']['summary']['total'])
+        g = GaugeMetricFamily("total_cases_confirmed", 'Total diagnosed cases in India')
+        g.add_metric([], response['statewise'][0]['confirmed'])
+        yield g
+
+        g = GaugeMetricFamily("total_cases_recovered", 'Total recovered cases in India')
+        g.add_metric([], response['statewise'][0]['recovered'])
+        yield g
+
+        g = GaugeMetricFamily("total_cases_deceased", 'Total deaths in India')
+        g.add_metric([], response['statewise'][0]['deaths'])
+        yield g
+
+        g = GaugeMetricFamily("total_cases_active", 'Total currently active cases in India')
+        g.add_metric([], response['statewise'][0]['active'])
         yield g
 
         
-        for state in response['data']['regional']:
-            
-            # print(str(state['confirmedCasesIndian'] + state['confirmedCasesForeign']))
-            h = GaugeMetricFamily("total_cases_by_state", 'Total diagnosed cases by state', labels = ['state'])
-            h.add_metric([state['loc']], float(state['confirmedCasesIndian'] + state['confirmedCasesForeign']))
-            yield h
+        for state in response['statewise'][1:]:
+            g = GaugeMetricFamily("total_cases_confirmed_by_state", 'Total diagnosed cases in that state', labels=['state'])
+            g.add_metric([state['state']], state['confirmed'])
+            yield g
 
-        c = CounterMetricFamily("HttpRequests", 'Help text', labels=['app'])
-        c.add_metric(["corona"], counter)
+            g = GaugeMetricFamily("total_cases_recovered_by_state", 'Total recovered cases in that state', labels=['state'])
+            g.add_metric([state['state']], state['recovered'])
+            yield g
 
-        counter = counter + 1
+            g = GaugeMetricFamily("total_cases_deceased_by_state", 'Total deaths in that state', labels=['state'])
+            g.add_metric([state['state']], state['deaths'])
+            yield g
 
-        yield c
+            g = GaugeMetricFamily("total_cases_active_by_state", 'Total currently active cases in that state', labels=['state'])
+            g.add_metric([state['state']], state['active'])
+            yield g
+
 
 
 if __name__ == '__main__':
